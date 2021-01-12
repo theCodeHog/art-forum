@@ -11,6 +11,9 @@
       <div class="comment-header">
         <font-awesome-icon :icon="['fas', 'user-secret']" />
         <span class="comment-user">{{ this.currentThread.name }}</span>
+        <span class="user-role">
+         ( {{ this.currentThread.userRole }} )
+        </span>
         <span class="comment-date"> {{ calculateTimePast }}</span>
         <span v-if="hasPermission">
           <font-awesome-icon
@@ -30,7 +33,15 @@
       <p class="thread-desc">{{ currentThread.content }}</p>
     </div>
     <div>
-      <div class="comments-bar"><p>{{ this.comments !== null && this.comments.length !== 0 ? "Comments" : "Be the first to comment!"}}</p></div>
+      <div class="comments-bar">
+        <p>
+          {{
+            this.comments !== null && this.comments.length !== 0
+              ? "Comments"
+              : "Be the first to comment!"
+          }}
+        </p>
+      </div>
       <Comment
         v-for="(comment, i) in comments"
         :key="i"
@@ -156,7 +167,6 @@ export default class ThreadPage extends Vue {
 
   updateComments(res) {
     this.comments = res;
-    console.log(this.comments);
   }
 
   async fetchThread() {
@@ -214,6 +224,11 @@ export default class ThreadPage extends Vue {
 }
 .comment-date {
   color: #8f98a0;
+}
+.user-role {
+  color: #8f98a0;
+  font-size: 12px;
+  margin-left: 10px;
 }
 .close-thread {
   position: absolute;

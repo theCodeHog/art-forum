@@ -5,7 +5,8 @@
   >
     <div class="comment-header">
       <font-awesome-icon :icon="['fas', 'user-secret']" />
-      <span class="comment-user">{{ comment.name }}</span>
+      <span class="comment-user">{{ comment.name }} 
+      <span class="user-role">| {{comment.userRole}} </span></span>
       <span class="comment-date">{{ calculateTimePast }}</span>
       <span v-if="hasPermission">
         <font-awesome-icon
@@ -99,6 +100,9 @@ export default class Comment extends Vue {
 .warning {
   border: solid 5px rgb(196, 42, 42) !important;
   color: rgb(245, 79, 79) !important;
+}
+.user-role{
+  font-size: 12px;
 }
 .delete-comment {
   position: absolute;
