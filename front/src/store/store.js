@@ -27,7 +27,6 @@ export default new Vuex.Store({
   },
   actions: {
     async login({ commit }, email, password) {
-      console.log(email, password);
       let res = await fetch(`/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

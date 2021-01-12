@@ -32,7 +32,6 @@ export default class CreateNewThread extends Vue {
   title = "";
   content = "";
 
-
   submit() {
     var current = new Date();
     var currentSubForum = this.$route.path.substring(1);
@@ -49,7 +48,6 @@ export default class CreateNewThread extends Vue {
   }
 
   async createNewThread(newThread) {
-    console.log(newThread);
     let res = await fetch(`/api/threads`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

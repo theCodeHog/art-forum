@@ -3,7 +3,10 @@
     <div id="thread">
       <h4 class="thread-title">
         {{ thread.title }}
-        <span class="last-updated">{{ calculateTimePast }}</span>
+        <span class="last-updated"
+          >{{ calculateTimePast }}
+          <font-awesome-icon v-if="thread.isClosed" :icon="['fas', 'lock']"
+        /></span>
       </h4>
 
       <h5 class="thread-username">{{ thread.name }}</h5>

@@ -1,6 +1,6 @@
 <template>
   <div id="create-new-comment">
-    <form @submit.prevent="submit">
+    <div>
       <textarea
         v-model="content"
         class="content-input"
@@ -10,17 +10,17 @@
       <input
         type="submit"
         value="Post Comment"
-        :click="submit"
+        @click="submit"
         class="submit-new-comment"
       />
       <input
         v-if="hasPermission"
         type="submit"
         value="Post as a Warning"
-        :click="submitWarning"
+        @click="submitWarning"
         class="submit-new-warning"
       />
-    </form>
+    </div>
   </div>
 </template>
 
@@ -36,7 +36,6 @@ export default class CreateNewComment extends Vue {
   hasPermission = false;
 
   checkPermissions() {
-    console.log(this.userRole, this.userDescription, this.currentCategory);
     if (
       this.userRole === "moderator" &&
       this.userDescription.includes(this.currentCategory)
@@ -58,6 +57,7 @@ export default class CreateNewComment extends Vue {
       threadId: currentThread,
       userId: this.$store.state.user.id,
     };
+    console.log(newComment);
     this.createNewComment(newComment);
     this.$router.push(`/${this.$route.path.substring(1).split("/")[0]}`);
   }
@@ -85,7 +85,6 @@ export default class CreateNewComment extends Vue {
     });
     res = await res.json();
     console.log(res);
-    this.$store.commit("setIsCreatingNewComment", false);
   }
 
   created(){

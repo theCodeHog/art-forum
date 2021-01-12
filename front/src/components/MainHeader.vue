@@ -4,7 +4,7 @@
       <h1 @click="goToHome()" class="pointer logo">ART FORUM</h1>
       <div v-if="this.$store.state.user.email !== null">
         <span id="login-button"
-          ><span @click="logout">Logout </span
+          ><span @click="logout">Logout {{ this.$store.state.user.name }} </span
           ><span
             v-if="this.$store.state.user.userRole === 'admin'"
             @click="goToAdmin()"

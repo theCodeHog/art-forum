@@ -3,7 +3,7 @@
     <p class="directory">
       <span class="pointer" @click="goToHome">All Discussions > </span>
       <span class="pointer" @click="goToCategory">
-        {{ this.$route.path.substring(1).split("/")[0] }} >
+        {{ currentCategory }} >
       </span>
       <b>{{ this.currentThread.title }}</b>
     </p>
@@ -30,8 +30,13 @@
       <p class="thread-desc">{{ currentThread.content }}</p>
     </div>
     <div>
-      <div class="comments-bar"><p>Comments</p></div>
-      <Comment v-for="(comment, i) in comments" :key="i" :comment="comment" />
+      <div class="comments-bar"><p>{{ this.comments !== null && this.comments.length !== 0 ? "Comments" : "Be the first to comment!"}}</p></div>
+      <Comment
+        v-for="(comment, i) in comments"
+        :key="i"
+        :comment="comment"
+        :isLocked="isThreadClosed"
+      />
     </div>
     <div v-if="!isThreadClosed && userRole !== null">
       <h4
@@ -67,6 +72,7 @@ export default class ThreadPage extends Vue {
   userRole = this.$store.state.user.userRole;
   userDescription = this.$store.state.user.description;
   currentCategory = this.$route.path.substring(1).split("/")[0];
+  currentThreadId = this.$route.path.substring(1).split("/")[1];
   isCreatingNewComment = false;
 
   /*   @Watch("comments")
@@ -92,7 +98,7 @@ export default class ThreadPage extends Vue {
   }
 
   goToCategory() {
-    this.$router.push(`/${this.$route.path.substring(1).split("/")[0]}`);
+    this.$router.push(`/${this.currentCategory}`);
   }
 
   toggleCommentCreation() {
@@ -150,20 +156,17 @@ export default class ThreadPage extends Vue {
 
   updateComments(res) {
     this.comments = res;
+    console.log(this.comments);
   }
 
   async fetchThread() {
-    let res = await fetch(
-      `/api/threads/${this.$route.path.substring(1).split("/")[1]}`
-    );
+    let res = await fetch(`/api/threads/${this.currentThreadId}`);
     res = await res.json();
     this.updateThread(res);
   }
 
   async fetchComments() {
-    let res = await fetch(
-      `/api/comments/specific/${this.$route.path.substring(1).split("/")[1]}`
-    );
+    let res = await fetch(`/api/comments/specific/${this.currentThreadId}`);
     res = await res.json();
     this.updateComments(res);
   }
