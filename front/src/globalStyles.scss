@@ -1,0 +1,75 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+:root {
+  --main-bg-color: #1b2838;
+  --main-text-color: #444444;
+  --main-lighter-text-color: #2e2e2e;
+  --darker-blue: #15576b;
+  --saldo-color: #47c0ac;
+  --broken-white: #ebebeb;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--main-bg-color);
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: var(--main-text-color);
+}
+
+.green {
+  color: rgb(82, 177, 114) !important;
+}
+
+.red {
+  color: rgb(240, 81, 81);
+}
+
+.pointer {
+  cursor: pointer !important;
+}
+
+hr {
+  margin: 1em;
+}
+
+.directory {
+  margin-bottom: 25px;
+  margin-left: 15px;
+  color: #e1e1e1;
+}
+
+.shadow {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.comment-header {
+  display: inline;
+}
+.comment-user {
+  color: #515d6b;
+  margin-left: 10px;
+  font-weight: 600;
+  font-size: 18px;
+}
+.comment-date {
+  color: #445366;
+  margin-left: 20px;
+  font-size: 12px;
+}
+.comment-content {
+  padding: 20px;
+}
