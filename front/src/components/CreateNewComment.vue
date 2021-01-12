@@ -57,9 +57,9 @@ export default class CreateNewComment extends Vue {
       threadId: currentThread,
       userId: this.$store.state.user.id,
     };
-    console.log(newComment);
     this.createNewComment(newComment);
-    this.$router.push(`/${this.$route.path.substring(1).split("/")[0]}`);
+    this.updateThread(currentThread, newComment.date);
+    this.$router.push(`/${this.currentCategory}`);
   }
 
   //had to separate this instead of using the submit() function due to rendering issue
@@ -74,7 +74,8 @@ export default class CreateNewComment extends Vue {
       isWarning: 1,
     };
     this.createNewComment(newComment);
-    this.$router.push(`/${this.$route.path.substring(1).split("/")[0]}`);
+    this.updateThread(currentThread, newComment.date);
+    this.$router.push(`/${this.currentCategory}`);
   }
 
   async createNewComment(newComment) {
@@ -87,7 +88,21 @@ export default class CreateNewComment extends Vue {
     console.log(res);
   }
 
-  created(){
+  async updateThread(threadId, timeUpdated) {
+    console.log(threadId, timeUpdated);
+    let update = {
+      timeUpdated: timeUpdated,
+    };
+    let res = await fetch(`/api/threads/${threadId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(update),
+    });
+    res = await res.json();
+    console.log(res);
+  }
+
+  created() {
     this.checkPermissions();
   }
 }

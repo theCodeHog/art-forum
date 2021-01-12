@@ -8,9 +8,9 @@ export default new Vuex.Store({
     user: { name: null, email: null, userRole: null },
     forumTopics: ["Traditional Art", "Digital Art", "Photography"],
     roles: [
-      { text: 'Admin', value: 'admin' },
-      { text: 'Moderator', value: 'moderator' },
-      { text: 'Basic User', value: 'basicUser' }
+      { text: "Admin", value: "admin" },
+      { text: "Moderator", value: "moderator" },
+      { text: "Basic User", value: "basicUser" },
     ],
     isCreatingNewThread: false,
     isCreatingNewComment: false,
@@ -31,6 +31,12 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    async fetchLoggedInUser({ commit }) {
+      let res = await fetch("/api/login");
+      res = await res.json();
+      console.log("User: ", res);
+      commit("setUser", res);
+    },
     async login({ commit }, email, password) {
       let res = await fetch(`/api/login`, {
         method: "POST",

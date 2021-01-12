@@ -1,12 +1,20 @@
 <template>
-  <div id="login">
-    <form class="login-block" @submit.prevent="login">
-      <h3>Login</h3>
+  <div id="register">
+    <form class="register-block" @submit.prevent="submit">
+      <h3>Register</h3>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="register-box"
+        placeholder="Enter First Name"
+        v-model="name"
+      />
       <input
         type="text"
         id="email"
         name="email"
-        class="input-box"
+        class="register-box"
         placeholder="Enter Email"
         v-model="email"
       />
@@ -14,11 +22,11 @@
         type="text"
         id="password"
         name="password"
-        class="input-box"
+        class="register-box"
         placeholder="Enter Password"
         v-model="password"
       />
-      <button class="input-box" id="submit">Login</button>
+      <button class="register-box" id="submit">Register</button>
     </form>
   </div>
 </template>
@@ -27,24 +35,36 @@
 import { Vue, Component } from "vue-property-decorator";
 
 @Component()
-export default class Login extends Vue {
+export default class Register extends Vue {
+  name = "";
   email = "";
   password = "";
 
-  async login() {
-    if (this.token !== "") {
-      let user = { email: this.email, password: this.password };
-      this.$store.dispatch("login", user).then(this.redirect());
-    }
-  }
-  redirect() {
+  submit() {
+    let newUser = {
+      name: this.name,
+      email: this.email,
+      password: this.password,
+      userRole: 'basicUser',
+    };
+    this.createNewUser(newUser);
     this.$router.push(`/`);
+  }
+
+  async createNewUser(newUser) {
+    let res = await fetch(`/api/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newUser),
+    });
+    res = await res.json();
+    console.log(res);
   }
 }
 </script>
 
 <style scoped lang="scss">
-#login {
+#register {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -69,14 +89,14 @@ input::placeholder {
   font-style: italic;
   color: #ffffff;
 }
-.login-block {
+.register-block {
   height: auto;
   padding: 5rem 0;
   text-align: center;
   margin: auto;
   color: #e1e1e1;
 }
-.input-box {
+.register-box {
   width: 35vw;
   height: 50px;
   margin: 1em auto;
@@ -84,7 +104,6 @@ input::placeholder {
 #username {
   margin: 0 auto 1rem;
 }
-
 #submit {
   margin: 2rem auto 0;
   padding: 6px;

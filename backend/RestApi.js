@@ -63,6 +63,7 @@ module.exports = class RestApi {
       INNER JOIN users ON
       ${table}.userId = users.id
       WHERE subforum = $data
+      ORDER BY timeUpdated DESC
     `);
       } else {
         statement = this.db.prepare(`

@@ -3,7 +3,7 @@
     <div id="main-header">
       <h1 @click="goToHome()" class="pointer logo">ART FORUM</h1>
       <div v-if="this.$store.state.user.email !== null">
-        <span id="login-button"
+        <span id="logout-button"
           ><span @click="logout">Logout {{ this.$store.state.user.name }} </span
           ><span
             v-if="this.$store.state.user.userRole === 'admin'"
@@ -14,7 +14,8 @@
         >
       </div>
       <div v-else>
-        <div id="login-button" @click="login">Login</div>
+        <span id="login-button" @click="login">Login |</span>
+        <span id="register-button" @click="register">Register</span>
       </div>
     </div>
   </div>
@@ -38,14 +39,15 @@ export default class MainHeader extends Vue {
   }
 
   login() {
-    console.log(this.$store.state.user.email);
     this.$router.push("/login");
+  }
+
+  register() {
+    this.$router.push("/register");
   }
 
   logout() {
     this.$store.dispatch("logout");
-    console.log(this.$store.state.user.email);
-    console.log();
     if (this.$route.path !== `/`) {
       this.$router.push("/");
     }
@@ -81,7 +83,23 @@ export default class MainHeader extends Vue {
 #login-button {
   position: absolute;
   top: 25px;
-  right: 50px;
+  right: 120px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  color: #c5c3c0;
+}
+#logout-button {
+  position: absolute;
+  top: 25px;
+  right: 60px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  color: #c5c3c0;
+}
+#register-button {
+  position: absolute;
+  top: 25px;
+  right: 58px;
   padding: 0.2rem 0.5rem;
   cursor: pointer;
   color: #c5c3c0;

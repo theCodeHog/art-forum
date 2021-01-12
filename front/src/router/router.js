@@ -5,6 +5,7 @@ import Login from "@/components/Login";
 import SubForum from "@/components/SubForum";
 import ThreadPage from "@/components/ThreadPage";
 import AdminPage from "@/components/AdminPage";
+import Register from "@/components/Register";
 
 Vue.use(VueRouter);
 
@@ -18,6 +19,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
   },
   {
     path: "/admin",
