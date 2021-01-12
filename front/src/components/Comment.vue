@@ -1,5 +1,8 @@
 <template>
-  <div id="comment" class="shadow">
+  <div
+    id="comment"
+    :class="{ 'shadow warning': comment.isWarning, shadow: !comment.isWarning }"
+  >
     <div class="comment-header">
       <font-awesome-icon :icon="['fas', 'user-secret']" />
       <span class="comment-user">{{ this.$props.comment.name }}</span>
@@ -28,17 +31,17 @@ export default class Thread extends Vue {
     timePast = timePast / 60;
     var hours = Math.floor(timePast % 24);
     var days = Math.floor(timePast / 24);
-
-    return (
-      days +
-      " days, " +
-      hours +
-      " hours, " +
-      minutes +
-      " minutes, and " +
-      seconds +
-      " seconds"
-    );
+    
+    if (days >= 1) {
+      return days + " days ago";
+    }
+    if (hours <= 23 && hours >= 1) {
+      return hours + " hours ago";
+    }
+    if (minutes >= 1) {
+      return minutes + " minutes ago";
+    }
+    return seconds + " seconds ago";
   }
 }
 </script>
@@ -49,5 +52,9 @@ export default class Thread extends Vue {
   margin-bottom: 0.3rem;
   background-color: #1f2e41;
   color: #e1e1e1;
+}
+.warning {
+  border: solid 5px rgb(196, 42, 42) !important;
+  color: rgb(245, 79, 79) !important;
 }
 </style>

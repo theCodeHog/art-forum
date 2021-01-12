@@ -14,7 +14,7 @@
         class="submit-new-comment"
       />
       <input
-        v-if="userRole === 'moderator' && userDescription.inludes(currentCategory) || userRole === 'admin'"
+        v-if="hasPermission"
         type="submit"
         value="Post as a Warning"
         :click="submitWarning"
@@ -33,6 +33,21 @@ export default class CreateNewComment extends Vue {
   userRole = this.$store.state.user.userRole;
   userDescription = this.$store.state.user.description;
   currentCategory = this.$route.path.substring(1).split("/")[0];
+  hasPermission = false;
+
+  checkPermissions() {
+    console.log(this.userRole, this.userDescription, this.currentCategory);
+    if (
+      this.userRole === "moderator" &&
+      this.userDescription.includes(this.currentCategory)
+    ) {
+      this.hasPermission = true;
+    } else if (this.$store.state.user.userRole === "admin") {
+      this.hasPermission = true;
+    } else {
+      this.hasPermission = false;
+    }
+  }
 
   submit() {
     var current = new Date();
@@ -47,8 +62,22 @@ export default class CreateNewComment extends Vue {
     this.$router.push(`/${this.$route.path.substring(1).split("/")[0]}`);
   }
 
+  //had to separate this instead of using the submit() function due to rendering issue
+  submitWarning() {
+    var current = new Date();
+    var currentThread = this.$route.path.substring(1).split("/")[1];
+    let newComment = {
+      content: this.content,
+      date: current.getTime(),
+      threadId: currentThread,
+      userId: this.$store.state.user.id,
+      isWarning: 1,
+    };
+    this.createNewComment(newComment);
+    this.$router.push(`/${this.$route.path.substring(1).split("/")[0]}`);
+  }
+
   async createNewComment(newComment) {
-    console.log(newComment);
     let res = await fetch(`/api/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,6 +86,10 @@ export default class CreateNewComment extends Vue {
     res = await res.json();
     console.log(res);
     this.$store.commit("setIsCreatingNewComment", false);
+  }
+
+  created(){
+    this.checkPermissions();
   }
 }
 </script>

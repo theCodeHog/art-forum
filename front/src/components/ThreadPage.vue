@@ -33,11 +33,10 @@
       <div class="comments-bar"><p>Comments</p></div>
       <Comment v-for="(comment, i) in comments" :key="i" :comment="comment" />
     </div>
-    <div v-if="!isThreadClosed">
+    <div v-if="!isThreadClosed && userRole !== null">
       <h4
         class="pointer create-new-comment-button"
         @click="toggleCommentCreation"
-        v-if="this.$store.state.user.userRole !== null"
       >
         Add a reply
       </h4>
@@ -61,11 +60,14 @@ import CreateNewComment from "./CreateNewComment";
 })
 export default class ThreadPage extends Vue {
   @Prop thread;
-  isCreatingNewComment = false;
+  comments = null;
   isThreadClosed = false;
   hasPermission = false;
   currentThread = {};
-  comments = null;
+  userRole = this.$store.state.user.userRole;
+  userDescription = this.$store.state.user.description;
+  currentCategory = this.$route.path.substring(1).split("/")[0];
+  isCreatingNewComment = false;
 
   /*   @Watch("comments")
   onChange(newVal) {
@@ -73,7 +75,10 @@ export default class ThreadPage extends Vue {
   } */
 
   checkPermissions() {
-    if (this.$store.state.user.userRole === "moderator" && this.$store.state.user.description.includes(this.$route.path.substring(1).split("/")[0])) {
+    if (
+      this.userRole === "moderator" &&
+      this.userDescription.includes(this.currentCategory)
+    ) {
       this.hasPermission = true;
     } else if (this.$store.state.user.userRole === "admin") {
       this.hasPermission = true;
@@ -126,17 +131,16 @@ export default class ThreadPage extends Vue {
     timePast = timePast / 60;
     var hours = Math.floor(timePast % 24);
     var days = Math.floor(timePast / 24);
-
-    return (
-      days +
-      " days, " +
-      hours +
-      " hours, " +
-      minutes +
-      " minutes, and " +
-      seconds +
-      " seconds"
-    );
+    if (days >= 1) {
+      return days + " days ago";
+    }
+    if (hours <= 23 && hours >= 1) {
+      return hours + " hours ago";
+    }
+    if (minutes >= 1) {
+      return minutes + " minutes ago";
+    }
+    return seconds + " seconds ago";
   }
 
   updateThread(res) {
@@ -153,7 +157,6 @@ export default class ThreadPage extends Vue {
       `/api/threads/${this.$route.path.substring(1).split("/")[1]}`
     );
     res = await res.json();
-    console.log(res);
     this.updateThread(res);
   }
 
@@ -162,7 +165,6 @@ export default class ThreadPage extends Vue {
       `/api/comments/specific/${this.$route.path.substring(1).split("/")[1]}`
     );
     res = await res.json();
-    console.log(res);
     this.updateComments(res);
   }
 
@@ -170,7 +172,6 @@ export default class ThreadPage extends Vue {
     this.fetchThread();
     this.fetchComments();
     this.checkPermissions();
-    console.log(this.$store.state.user);
   }
 }
 </script>
