@@ -14,7 +14,7 @@
         class="submit-new-comment"
       />
       <input
-        v-if="userRole === 'moderator' || userRole === 'admin'"
+        v-if="userRole === 'moderator' && userDescription.inludes(currentCategory) || userRole === 'admin'"
         type="submit"
         value="Post as a Warning"
         :click="submitWarning"
@@ -31,6 +31,8 @@ import { Vue, Component } from "vue-property-decorator";
 export default class CreateNewComment extends Vue {
   content = "";
   userRole = this.$store.state.user.userRole;
+  userDescription = this.$store.state.user.description;
+  currentCategory = this.$route.path.substring(1).split("/")[0];
 
   submit() {
     var current = new Date();
@@ -42,6 +44,7 @@ export default class CreateNewComment extends Vue {
       userId: this.$store.state.user.id,
     };
     this.createNewComment(newComment);
+    this.$router.push(`/${this.$route.path.substring(1).split("/")[0]}`);
   }
 
   async createNewComment(newComment) {

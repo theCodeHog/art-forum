@@ -12,6 +12,19 @@
         <font-awesome-icon :icon="['fas', 'user-secret']" />
         <span class="comment-user">{{ this.currentThread.name }}</span>
         <span class="comment-date"> {{ calculateTimePast }}</span>
+        <span v-if="hasPermission">
+          <font-awesome-icon
+            v-if="!isThreadClosed"
+            :icon="['fas', 'times']"
+            class="close-thread pointer"
+            @click="closeThread"
+          />
+        </span>
+        <font-awesome-icon
+          v-if="isThreadClosed"
+          :icon="['fas', 'lock']"
+          class="close-thread"
+        />
       </div>
       <h2 class="thread-title">{{ currentThread.title }}</h2>
       <p class="thread-desc">{{ currentThread.content }}</p>
@@ -20,13 +33,15 @@
       <div class="comments-bar"><p>Comments</p></div>
       <Comment v-for="(comment, i) in comments" :key="i" :comment="comment" />
     </div>
-    <h4
-      class="pointer create-new-comment-button"
-      @click="toggleCommentCreation"
-      v-if="this.$store.state.user.userRole !== null"
-    >
-      Add a reply
-    </h4>
+    <div v-if="!isThreadClosed">
+      <h4
+        class="pointer create-new-comment-button"
+        @click="toggleCommentCreation"
+        v-if="this.$store.state.user.userRole !== null"
+      >
+        Add a reply
+      </h4>
+    </div>
     <div>
       <CreateNewComment v-if="isCreatingNewComment" />
     </div>
@@ -34,7 +49,7 @@
 </template>
 
 <script>
-import { Vue, Component, Watch, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import Comment from "./Comment";
 import CreateNewComment from "./CreateNewComment";
 
@@ -47,12 +62,24 @@ import CreateNewComment from "./CreateNewComment";
 export default class ThreadPage extends Vue {
   @Prop thread;
   isCreatingNewComment = false;
+  isThreadClosed = false;
+  hasPermission = false;
   currentThread = {};
   comments = null;
 
-  @Watch("comments")
+  /*   @Watch("comments")
   onChange(newVal) {
     this.comments = newVal;
+  } */
+
+  checkPermissions() {
+    if (this.$store.state.user.userRole === "moderator" && this.$store.state.user.description.includes(this.$route.path.substring(1).split("/")[0])) {
+      this.hasPermission = true;
+    } else if (this.$store.state.user.userRole === "admin") {
+      this.hasPermission = true;
+    } else {
+      this.hasPermission = false;
+    }
   }
 
   goToHome() {
@@ -67,8 +94,27 @@ export default class ThreadPage extends Vue {
     this.isCreatingNewComment = !this.isCreatingNewComment;
   }
 
+  closeThread() {
+    let update = {
+      isClosed: 1,
+    };
+    this.closeThreadOnDb(update);
+    this.isCreatingNewComment = false;
+    this.isThreadClosed = true;
+  }
+
+  async closeThreadOnDb(update) {
+    let res = await fetch(`/api/threads/${this.currentThread.threadsId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(update),
+    });
+    res = await res.json();
+    console.log(res);
+  }
+
+  //Work in progress - not important currently
   get calculateTimePast() {
-    console.log(this.$store.state.user.userRole);
     let timeNow = new Date();
     timeNow = timeNow.getTime();
     let timeCreated = this.currentThread.timeCreated;
@@ -95,6 +141,7 @@ export default class ThreadPage extends Vue {
 
   updateThread(res) {
     this.currentThread = res;
+    this.isThreadClosed = this.currentThread.isClosed;
   }
 
   updateComments(res) {
@@ -106,6 +153,7 @@ export default class ThreadPage extends Vue {
       `/api/threads/${this.$route.path.substring(1).split("/")[1]}`
     );
     res = await res.json();
+    console.log(res);
     this.updateThread(res);
   }
 
@@ -121,6 +169,8 @@ export default class ThreadPage extends Vue {
   created() {
     this.fetchThread();
     this.fetchComments();
+    this.checkPermissions();
+    console.log(this.$store.state.user);
   }
 }
 </script>
@@ -160,5 +210,9 @@ export default class ThreadPage extends Vue {
 }
 .comment-date {
   color: #8f98a0;
+}
+.close-thread {
+  position: absolute;
+  right: 60px;
 }
 </style>

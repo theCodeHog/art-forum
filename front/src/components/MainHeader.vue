@@ -46,7 +46,7 @@ export default class MainHeader extends Vue {
     this.$store.dispatch("logout");
     console.log(this.$store.state.user.email);
     console.log();
-    if (this.$route.path === `/admin`) {
+    if (this.$route.path !== `/`) {
       this.$router.push("/");
     }
   }

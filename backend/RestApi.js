@@ -72,7 +72,6 @@ module.exports = class RestApi {
       WHERE threadId = $data
     `);
       }
-      console.log(statement);
       let result =
         statement.all(req.params).map((x) => ({ ...x, password: undefined })) ||
         [];
@@ -131,7 +130,6 @@ module.exports = class RestApi {
       VALUES (${Object.keys(b).map((x) => "$" + x)})
     `);
       try {
-        console.log(statement);
         res.json(statement.run(b));
       } catch (e) {
         res.json({ error: e + "" });
@@ -145,12 +143,23 @@ module.exports = class RestApi {
       if (b.password) {
         b.password = Encrypt.multiEncrypt(b.password);
       }
-      b.id = req.params.id;
-      let statement = this.db.prepare(`
-      UPDATE ${table} 
-      SET ${Object.keys(b).map((x) => x + " = $" + x)}
-      WHERE id = $id
-    `);
+      let statement;
+
+      if (table === "threads") {
+        b.threadsId = req.params.id;
+        statement = this.db.prepare(`
+        UPDATE ${table} 
+        SET ${Object.keys(b).map((x) => x + " = $" + x)}
+        WHERE ${table}Id = $threadsId
+        `);
+      } else {
+        b.id = req.params.id;
+        statement = this.db.prepare(`
+          UPDATE ${table} 
+          SET ${Object.keys(b).map((x) => x + " = $" + x)}
+          WHERE id = $id
+        `);
+      }
       try {
         res.json(statement.run(b));
       } catch (e) {

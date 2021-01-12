@@ -45,6 +45,7 @@ export default class CreateNewThread extends Vue {
       userId: this.$store.state.user.id,
     };
     this.createNewThread(newThread);
+    this.$router.push(`/`);
   }
 
   async createNewThread(newThread) {
