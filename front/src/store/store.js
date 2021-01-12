@@ -7,6 +7,11 @@ export default new Vuex.Store({
   state: {
     user: { name: null, email: null, userRole: null },
     forumTopics: ["Traditional Art", "Digital Art", "Photography"],
+    roles: [
+      { text: 'Admin', value: 'admin' },
+      { text: 'Moderator', value: 'moderator' },
+      { text: 'Basic User', value: 'basicUser' }
+    ],
     isCreatingNewThread: false,
     isCreatingNewComment: false,
     currentThread: {},

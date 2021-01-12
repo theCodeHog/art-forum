@@ -170,9 +170,16 @@ module.exports = class RestApi {
 
   createDeleteRoute(table) {
     this.app.delete(this.prefix + table + "/:id", (req, res) => {
-      let statement = this.db.prepare(`
+      let statement;
+      if (table === "comments" || table === "threads") {
+        statement = this.db.prepare(`
         DELETE FROM ${table} WHERE ${table}Id = $id
       `);
+      } else {
+        statement = this.db.prepare(`
+        DELETE FROM ${table} WHERE id = $id
+      `);
+      }
       try {
         res.json(statement.run(req.params));
       } catch (e) {

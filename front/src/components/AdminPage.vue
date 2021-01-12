@@ -1,18 +1,56 @@
 <template>
   <div id="admin-page" v-if="this.$store.state.user.userRole === 'admin'">
     <h1 class="welcome-text">Admin Power Page</h1>
+    <div id="">
+      <UpdateUser
+        v-for="(user, i) in users"
+        class="pointer"
+        :key="i"
+        :user="user"
+      />
+    </div>
   </div>
-
-
 
   <div v-else class="welcome-text">NO ACCESS.</div>
 </template>
 
 <script>
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
+import UpdateUser from "./UpdateUser";
 
-@Component()
-export default class AdminPage extends Vue {}
+@Component({
+  components: {
+    UpdateUser,
+  },
+})
+export default class AdminPage extends Vue {
+  isEditingUser = false;
+  users = null;
+
+  @Watch("users")
+  onChange(newVal) {
+    this.users = newVal;
+  }
+
+  toggleUserEditingField() {
+    this.isEditingUser = !this.isEditingUser;
+  }
+
+  updateUsers(res) {
+    this.users = res;
+  }
+
+  async fetchUsers() {
+    let res = await fetch(`/api/users`);
+    res = await res.json();
+    console.log(res);
+    this.updateUsers(res);
+  }
+
+  created() {
+    this.fetchUsers();
+  }
+}
 </script>
 
 <style scoped lang="scss">

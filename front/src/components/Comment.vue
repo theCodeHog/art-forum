@@ -24,7 +24,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component()
-export default class Thread extends Vue {
+export default class Comment extends Vue {
   @Prop() comment;
   @Prop() isLocked;
   hasPermission = false;
