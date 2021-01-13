@@ -6,6 +6,7 @@ import SubForum from "@/components/SubForum";
 import ThreadPage from "@/components/ThreadPage";
 import AdminPage from "@/components/AdminPage";
 import Register from "@/components/Register";
+import PageNotFound from "@/components/PageNotFound";
 
 Vue.use(VueRouter);
 
@@ -39,6 +40,11 @@ const routes = [
     path: "/:subforum/:id",
     name: "ThreadPage",
     component: ThreadPage,
+  },
+  {
+    path: "*",
+    name: "PageNotFound",
+    component: PageNotFound,
   },
 ];
 
