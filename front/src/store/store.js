@@ -34,8 +34,9 @@ export default new Vuex.Store({
     async fetchLoggedInUser({ commit }) {
       let res = await fetch("/api/login");
       res = await res.json();
-      console.log("User: ", res);
-      commit("setUser", res);
+      if (res) {
+        commit("setUser", res);
+      }
     },
     async login({ commit }, email, password) {
       let res = await fetch(`/api/login`, {
@@ -44,7 +45,11 @@ export default new Vuex.Store({
         body: JSON.stringify({ email: email, password: password }),
       });
       res = await res.json();
-      commit("setUser", res);
+      if (!res) {
+        console.log("Login failed.");
+      } else {
+        commit("setUser", res);
+      }
     },
     async logout({ commit }) {
       commit("setUser", { name: null, email: null, userRole: null });

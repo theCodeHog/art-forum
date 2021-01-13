@@ -43,7 +43,6 @@ export default class AdminPage extends Vue {
   async fetchUsers() {
     let res = await fetch(`/api/users`);
     res = await res.json();
-    console.log(res);
     this.updateUsers(res);
   }
 

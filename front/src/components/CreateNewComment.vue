@@ -56,13 +56,14 @@ export default class CreateNewComment extends Vue {
       date: current.getTime(),
       threadId: currentThread,
       userId: this.$store.state.user.id,
+      isWarning: 0,
     };
     this.createNewComment(newComment);
     this.updateThread(currentThread, newComment.date);
     this.$router.push(`/${this.currentCategory}`);
   }
 
-  //had to separate this instead of using the submit() function due to rendering issue
+  //had to separate this instead of using the regular submit() function due to rendering issue
   submitWarning() {
     var current = new Date();
     var currentThread = this.$route.path.substring(1).split("/")[1];
@@ -71,7 +72,6 @@ export default class CreateNewComment extends Vue {
       date: current.getTime(),
       threadId: currentThread,
       userId: this.$store.state.user.id,
-      isWarning: 1,
     };
     this.createNewComment(newComment);
     this.updateThread(currentThread, newComment.date);
@@ -89,7 +89,6 @@ export default class CreateNewComment extends Vue {
   }
 
   async updateThread(threadId, timeUpdated) {
-    console.log(threadId, timeUpdated);
     let update = {
       timeUpdated: timeUpdated,
     };

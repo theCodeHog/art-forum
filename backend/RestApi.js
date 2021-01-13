@@ -8,7 +8,6 @@ module.exports = class RestApi {
     this.prefix = urlPrefix;
 
     let tables = this.getAllTables();
-    console.log(tables);
     for (let table of tables) {
       this.createGetAllRoute(table);
       this.createGetRoute(table);

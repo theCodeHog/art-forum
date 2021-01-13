@@ -55,7 +55,6 @@ export default class CreateNewThread extends Vue {
     });
     res = await res.json();
     console.log(res);
-    this.$store.commit("setIsCreatingNewThread", false);
   }
 }
 </script>

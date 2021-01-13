@@ -13,20 +13,14 @@ import MainHeader from "./components/MainHeader";
 
 @Component({
   components: {
-    MainHeader
+    MainHeader,
   },
 })
 export default class App extends Vue {
 
-  get isUserLoggedIn() {
-    if (this.$store.state.user.name !== null) {
-      //this.$router.push(`/team/${this.$store.state.user.token}`);
-      return true;
-    }
-    return false;
+  created() {
+    this.$store.dispatch("fetchLoggedInUser");
   }
-
-  created() {}
 }
 </script>
 

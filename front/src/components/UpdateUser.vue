@@ -97,7 +97,6 @@ export default class UpdateUser extends Vue {
   }
 
   async deleteUser(userId) {
-    console.log(userId);
     let res = await fetch(`/api/users/${userId}`, {
       method: "DELETE",
     });
