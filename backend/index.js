@@ -42,6 +42,6 @@ app.use(ACL(ACLsettings));
 new RestApi(app);
 
 // Start the web server
-app.listen(3000, () => {
-  console.log("Listening on port 3000");
+app.listen(4002, () => {
+  console.log("Listening on port 4002");
 });
