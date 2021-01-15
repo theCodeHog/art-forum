@@ -41,6 +41,10 @@ app.use(ACL(ACLsettings));
 // REST api
 new RestApi(app);
 
+// Handle SPA
+app.use(express.static(__dirname + '/dist'));
+app.get('*', (req, res) => res.sendFile(__dirname + '/dist/index.html'));
+
 // Start the web server
 app.listen(4002, () => {
   console.log("Listening on port 4002");
