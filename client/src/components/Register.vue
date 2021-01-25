@@ -1,7 +1,12 @@
 <template>
   <div id="register">
     <form class="register-block" @submit.prevent="submit">
-      <h3>Register</h3>
+      <h3 class="register">Register</h3>
+        <p v-if="errors.length">
+    <ul>
+      <p class="red" v-for="(error, i) in errors" :key="i">{{ error +  " "}}</p>
+    </ul>
+  </p>
       <input
         type="text"
         id="name"
@@ -11,7 +16,7 @@
         v-model="name"
       />
       <input
-        type="text"
+        type="email"
         id="email"
         name="email"
         class="register-box"
@@ -19,7 +24,7 @@
         v-model="email"
       />
       <input
-        type="text"
+        type="password"
         id="password"
         name="password"
         class="register-box"
@@ -36,19 +41,50 @@ import { Vue, Component } from "vue-property-decorator";
 
 @Component()
 export default class Register extends Vue {
-  name = "";
-  email = "";
-  password = "";
+  name = null;
+  email = null;
+  password = null;
+  errors = [];
+
+  checkForm() {
+    this.errors = [];
+
+    if (this.name === null) {
+      this.errors.push("Name required.");
+    }
+
+    if (this.password === null) {
+      this.errors.push("Password required.");
+    }
+
+    if (this.email === null) {
+      this.errors.push("Email required.");
+    } else if (!this.validEmail(this.email)) {
+      this.errors.push("Valid email required.");
+    }
+
+    if (!this.errors.length) {
+      return true;
+    }
+  }
+
+  validEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
 
   submit() {
-    let newUser = {
-      name: this.name,
-      email: this.email,
-      password: this.password,
-      userRole: 'basicUser',
-    };
-    this.createNewUser(newUser);
-    this.$router.push(`/`);
+    let value = this.checkForm();
+    if (value) {
+      let newUser = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        userRole: "basicUser",
+      };
+      this.createNewUser(newUser);
+      this.$router.push(`/`);
+    }
   }
 
   async createNewUser(newUser) {
@@ -58,7 +94,9 @@ export default class Register extends Vue {
       body: JSON.stringify(newUser),
     });
     res = await res.json();
-    console.log(res);
+        if (!res){
+      console.log('Failed.');
+    }
   }
 }
 </script>
@@ -71,6 +109,9 @@ export default class Register extends Vue {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.register{
+  margin-bottom: 1em;
 }
 input {
   border: none;

@@ -5,8 +5,10 @@
   >
     <div class="comment-header">
       <font-awesome-icon :icon="['fas', 'user-secret']" />
-      <span class="comment-user">{{ comment.name }} 
-      <span class="user-role">| {{comment.userRole}} </span></span>
+      <span class="comment-user"
+        >{{ comment.name }}
+        <span class="user-role">| {{ comment.userRole }} </span></span
+      >
       <span class="comment-date">{{ calculateTimePast }}</span>
       <span v-if="hasPermission">
         <font-awesome-icon
@@ -31,11 +33,11 @@ export default class Comment extends Vue {
   hasPermission = false;
   userRole = this.$store.state.user.userRole;
   userDescription = this.$store.state.user.description;
-  currentCategory = this.$route.path.substring(1).split("/")[0];
+  currentCategory = this.$route.path.substring(1).split("/")[1];
 
   checkPermissions() {
     if (
-      this.userRole === "moderator" &&
+      this.userDescription &&
       this.userDescription.includes(this.currentCategory)
     ) {
       this.hasPermission = true;
@@ -73,16 +75,17 @@ export default class Comment extends Vue {
 
   deleteThisComment(id) {
     this.deleteComment(id);
-    this.$router.push(`/${this.currentCategory}`);
+    this.$router.push(`/forum/${this.currentCategory}`);
   }
 
   async deleteComment(commentId) {
-    console.log(commentId);
     let res = await fetch(`/api/comments/${commentId}`, {
       method: "DELETE",
     });
     res = await res.json();
-    console.log(res);
+    if (!res) {
+      console.log("Failed.");
+    }
   }
   created() {
     this.checkPermissions();
@@ -101,7 +104,7 @@ export default class Comment extends Vue {
   border: solid 5px rgb(196, 42, 42) !important;
   color: rgb(245, 79, 79) !important;
 }
-.user-role{
+.user-role {
   font-size: 12px;
 }
 .delete-comment {

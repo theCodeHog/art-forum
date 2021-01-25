@@ -1,9 +1,14 @@
 <template>
   <div id="login">
     <form class="login-block" @submit.prevent="login">
-      <h3>Login</h3>
+      <h3 class="login-h3">Login</h3>
+      <p v-if="errors.length">
+          <ul>
+            <p class="red" v-for="(error, i) in errors" :key="i">{{ error + " " }}</p>
+          </ul>
+      </p>
       <input
-        type="text"
+        type="email"
         id="email"
         name="email"
         class="input-box"
@@ -11,13 +16,14 @@
         v-model="email"
       />
       <input
-        type="text"
+        type="password"
         id="password"
         name="password"
         class="input-box"
         placeholder="Enter Password"
         v-model="password"
       />
+      
       <button class="input-box" id="submit">Login</button>
     </form>
   </div>
@@ -28,11 +34,36 @@ import { Vue, Component } from "vue-property-decorator";
 
 @Component()
 export default class Login extends Vue {
-  email = "";
-  password = "";
+  email = null;
+  password = null;
+  errors = [];
+
+    checkForm() {
+    this.errors = [];
+
+    if (this.email === null) {
+      this.errors.push("Email required.");
+    } else if (!this.validEmail(this.email)) {
+      this.errors.push("Valid email required.");
+    }
+
+    if (this.password === null) {
+      this.errors.push("Password required.");
+    }
+
+    if (!this.errors.length) {
+      return true;
+    }
+  }
+
+  validEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
 
   async login() {
-    if (this.token !== "") {
+    let value = this.checkForm();
+    if (value){
       let user = { email: this.email, password: this.password };
       this.$store.dispatch("login", user).then(this.redirect());
     }
@@ -51,6 +82,9 @@ export default class Login extends Vue {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.login-h3{
+  margin-bottom: 1em;
 }
 input {
   border: none;

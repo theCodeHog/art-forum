@@ -5,7 +5,7 @@
         {{ thread.title }}
         <span class="last-updated"
           >{{ calculateTimePast }}
-          <font-awesome-icon v-if="thread.isClosed" :icon="['fas', 'lock']"
+          <font-awesome-icon class="red" v-if="thread.isClosed" :icon="['fas', 'lock']"
         /></span>
       </h4>
 

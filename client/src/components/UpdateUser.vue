@@ -88,12 +88,14 @@ export default class UpdateUser extends Vue {
       body: JSON.stringify(edits),
     });
     res = await res.json();
-    console.log(res);
+    if (!res) {
+      console.log("Failed.");
+    }
   }
 
   deleteThisUser(id) {
     this.deleteUser(id);
-    this.$router.push(`/${this.currentCategory}`);
+    this.$router.push(`/`);
   }
 
   async deleteUser(userId) {
@@ -101,7 +103,9 @@ export default class UpdateUser extends Vue {
       method: "DELETE",
     });
     res = await res.json();
-    console.log(res);
+    if (!res) {
+      console.log("Failed.");
+    }
   }
 }
 </script>

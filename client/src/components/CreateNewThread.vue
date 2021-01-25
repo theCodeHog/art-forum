@@ -17,7 +17,6 @@
       <input
         type="submit"
         value="Post New Discussion"
-        :click="submit"
         class="submit-new-thread"
       />
     </form>
@@ -34,7 +33,7 @@ export default class CreateNewThread extends Vue {
 
   submit() {
     var current = new Date();
-    var currentSubForum = this.$route.path.substring(1);
+    var currentSubForum = this.$route.path.substring(1).split("/")[1];
     let newThread = {
       title: this.title,
       content: this.content,
@@ -54,7 +53,9 @@ export default class CreateNewThread extends Vue {
       body: JSON.stringify(newThread),
     });
     res = await res.json();
-    console.log(res);
+    if (!res){
+      console.log('Failed.');
+    }
   }
 }
 </script>

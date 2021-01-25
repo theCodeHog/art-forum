@@ -52,7 +52,15 @@ export default new Vuex.Store({
       }
     },
     async logout({ commit }) {
-      commit("setUser", { name: null, email: null, userRole: null });
+      let res = await fetch("/api/login", {
+        method: "DELETE",
+      });
+      res = await res.json();
+      if (!res) {
+        console.log("Logout failed.");
+      } else {
+        commit("setUser", { name: null, email: null, userRole: null });
+      }
     },
   },
   modules: {},

@@ -32,12 +32,12 @@ const routes = [
     component: AdminPage,
   },
   {
-    path: "/:subforum",
+    path: "/forum/:subforum",
     name: "SubForum",
     component: SubForum,
   },
   {
-    path: "/:subforum/:id",
+    path: "/forum/:subforum/:id",
     name: "ThreadPage",
     component: ThreadPage,
   },

@@ -37,6 +37,7 @@ export default class AdminPage extends Vue {
   }
 
   updateUsers(res) {
+    res = res.filter(person => person.name !== 'Owl');
     this.users = res;
   }
 

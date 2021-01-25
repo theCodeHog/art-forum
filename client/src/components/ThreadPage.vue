@@ -11,9 +11,7 @@
       <div class="comment-header">
         <font-awesome-icon :icon="['fas', 'user-secret']" />
         <span class="comment-user">{{ this.currentThread.name }}</span>
-        <span class="user-role">
-         ( {{ this.currentThread.userRole }} )
-        </span>
+        <span class="user-role"> ( {{ this.currentThread.userRole }} ) </span>
         <span class="comment-date"> {{ calculateTimePast }}</span>
         <span v-if="hasPermission">
           <font-awesome-icon
@@ -82,8 +80,8 @@ export default class ThreadPage extends Vue {
   currentThread = {};
   userRole = this.$store.state.user.userRole;
   userDescription = this.$store.state.user.description;
-  currentCategory = this.$route.path.substring(1).split("/")[0];
-  currentThreadId = this.$route.path.substring(1).split("/")[1];
+  currentCategory = this.$route.path.substring(1).split("/")[1];
+  currentThreadId = this.$route.path.substring(1).split("/")[2];
   isCreatingNewComment = false;
 
   /*   @Watch("comments")
@@ -109,7 +107,7 @@ export default class ThreadPage extends Vue {
   }
 
   goToCategory() {
-    this.$router.push(`/${this.currentCategory}`);
+    this.$router.push(`/forum/${this.currentCategory}`);
   }
 
   toggleCommentCreation() {
@@ -132,7 +130,9 @@ export default class ThreadPage extends Vue {
       body: JSON.stringify(update),
     });
     res = await res.json();
-    console.log(res);
+    if (!res) {
+      console.log("Failed.");
+    }
   }
 
   //Work in progress - not important currently
@@ -233,5 +233,6 @@ export default class ThreadPage extends Vue {
 .close-thread {
   position: absolute;
   right: 60px;
+  color: rgb(240, 81, 81);
 }
 </style>

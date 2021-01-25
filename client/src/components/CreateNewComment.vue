@@ -32,7 +32,7 @@ export default class CreateNewComment extends Vue {
   content = "";
   userRole = this.$store.state.user.userRole;
   userDescription = this.$store.state.user.description;
-  currentCategory = this.$route.path.substring(1).split("/")[0];
+  currentCategory = this.$route.path.substring(1).split("/")[1];
   hasPermission = false;
 
   checkPermissions() {
@@ -49,33 +49,36 @@ export default class CreateNewComment extends Vue {
   }
 
   submit() {
-    var current = new Date();
-    var currentThread = this.$route.path.substring(1).split("/")[1];
-    let newComment = {
-      content: this.content,
-      date: current.getTime(),
-      threadId: currentThread,
-      userId: this.$store.state.user.id,
-      isWarning: 0,
-    };
-    this.createNewComment(newComment);
-    this.updateThread(currentThread, newComment.date);
-    this.$router.push(`/${this.currentCategory}`);
+    if (this.content !== "") {
+      var current = new Date();
+      var currentThread = this.$route.path.substring(1).split("/")[2];
+      let newComment = {
+        content: this.content,
+        date: current.getTime(),
+        threadId: currentThread,
+        userId: this.$store.state.user.id,
+        isWarning: 0,
+      };
+      this.createNewComment(newComment);
+      this.updateThread(currentThread, newComment.date);
+      this.$router.push(`/forum/${this.currentCategory}`);
+    }
   }
 
   //had to separate this instead of using the regular submit() function due to rendering issue
   submitWarning() {
     var current = new Date();
-    var currentThread = this.$route.path.substring(1).split("/")[1];
+    var currentThread = this.$route.path.substring(1).split("/")[2];
     let newComment = {
       content: this.content,
       date: current.getTime(),
       threadId: currentThread,
       userId: this.$store.state.user.id,
+      isWarning: 1,
     };
     this.createNewComment(newComment);
     this.updateThread(currentThread, newComment.date);
-    this.$router.push(`/${this.currentCategory}`);
+    this.$router.push(`/forum/${this.currentCategory}`);
   }
 
   async createNewComment(newComment) {
@@ -85,7 +88,9 @@ export default class CreateNewComment extends Vue {
       body: JSON.stringify(newComment),
     });
     res = await res.json();
-    console.log(res);
+    if (!res) {
+      console.log("Failed.");
+    }
   }
 
   async updateThread(threadId, timeUpdated) {
@@ -98,7 +103,9 @@ export default class CreateNewComment extends Vue {
       body: JSON.stringify(update),
     });
     res = await res.json();
-    console.log(res);
+    if (!res) {
+      console.log("Failed.");
+    }
   }
 
   created() {

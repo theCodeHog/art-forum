@@ -23,7 +23,7 @@ export default class Home extends Vue {
   }
 
   goToSubForum(subForum) {
-    this.$router.push(`/${subForum}`);
+    this.$router.push(`/forum/${subForum}`);
   }
 }
 </script>

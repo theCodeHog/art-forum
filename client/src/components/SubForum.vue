@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="directory"><span class="pointer" @click="goToHome">All Discussions > </span>
-       {{ this.$route.path.substring(1) }}
+       {{ this.$route.path.substring(1).split("/")[1].replace("%20", " ") }}
     </p>
     <div id="">
       <Thread
@@ -58,7 +58,7 @@ export default class SubForum extends Vue {
 
   async fetchThreads() {
     let res = await fetch(
-      `/api/threads/specific/${this.$route.path.substring(1)}`
+      `/api/threads/specific/${this.$route.path.substring(1).split("/")[1]}`
     );
     res = await res.json();
     this.updateThreads(res);
