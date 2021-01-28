@@ -94,13 +94,21 @@ export default class UpdateUser extends Vue {
   }
 
   deleteThisUser(id) {
-    this.deleteUser(id);
+     let removedUser = {
+      userRole: "",
+      description: "userLeft",
+      password: "",
+      email: "",
+    };
+    this.deleteUser(id, removedUser);
     this.$router.push(`/`);
   }
 
-  async deleteUser(userId) {
+  async deleteUser(userId, userToRemove) {
     let res = await fetch(`/api/users/${userId}`, {
-      method: "DELETE",
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userToRemove),
     });
     res = await res.json();
     if (!res) {
