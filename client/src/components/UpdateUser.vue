@@ -97,8 +97,7 @@ export default class UpdateUser extends Vue {
      let removedUser = {
       userRole: "",
       description: "userLeft",
-      password: "",
-      email: "",
+      password: "userLeft"
     };
     this.deleteUser(id, removedUser);
     this.$router.push(`/`);
